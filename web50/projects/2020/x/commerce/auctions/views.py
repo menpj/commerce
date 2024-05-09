@@ -3,12 +3,32 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
-from .models import User
+from django import forms
+from .models import User,Listing,Bid
+from django.db.models import Max
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    
+    #highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
+    highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
+    #highestBid= Bid.objects.aggregate(Max('bid')) 
+    #print(highestBid[0]['hbid'])
+    hBid=list(highestBid)  
+    #print(type(highestBid))
+    highestBid={}
+    for bid in hBid:
+        highestBid[bid['listingid']]=bid['hbid']
+
+    for bid in highestBid:
+        print(bid)
+    print(highestBid)
+    #print(highestBid['0])
+    #lisitngs= list(Listing.objects.all())
+    #print(lisitngs)
+    
+    print(highestBid[4])
+    return render(request, "auctions/index.html", {"listings": Listing.objects.all(),"bid": highestBid})
 
 
 def login_view(request):
@@ -61,3 +81,55 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+    
+
+class NewListingForm(forms.Form):
+    title=forms.CharField(label="New Listing Title",empty_value="Title",max_length=100)
+    description=forms.CharField(label="Listing Description",widget=forms.Textarea)
+    bid=forms.DecimalField(label="Base Bid",min_value=0)
+    imageurl=forms.URLField(label="URL of Image",required=False)
+    category=forms.CharField(label="Category",required=False)
+def createlisting(request):
+
+    if request.method=="POST":
+        form=NewListingForm(request.POST)
+        if form.is_valid():
+            ursid=request.user
+            title=form.cleaned_data["title"]
+            description=form.cleaned_data["description"]
+            bid = form.cleaned_data["bid"]
+            imageurl = form.cleaned_data["imageurl"]
+            category = form.cleaned_data["category"]
+            print(title)
+            print(description)
+            print(bid)
+            if imageurl:
+                print(imageurl)
+            if category:
+                print(category)
+            listing=Listing(title=title,description=description,basebid=bid,imageurl=imageurl,category=category,usrid=ursid)
+            
+           
+            listing.save()
+            print("lisitng:")
+            #listing=Listing.objects.get(listing)
+            #print(type(listing))
+            listingid=listing.listingid
+            listing=Listing.objects.get(pk=listingid)
+
+            print(listing)
+            bid=Bid(listingid=listing ,bid=bid)
+            bid.save()
+            print("bid:")
+            print(bid)
+            
+            
+            
+            
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request,"auctions/createlisting.html",{
+                "form":form
+            })
+
+    return render(request, "auctions/createlisting.html",{"form": NewListingForm()}) 

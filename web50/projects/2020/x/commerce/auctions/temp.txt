@@ -1,0 +1,2 @@
+SELECT MAX(bid) FROM BID GROUP BY listingid
+{{ highestbid[listing.listingid] }} 
