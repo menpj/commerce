@@ -20,9 +20,12 @@
                 
 
                  {% if listing.imageurl %}
-                    <img src={{listing.imageurl}}/>
+                    <img src="https://imgd.aeplcdn.com/664x374/cw/cars/discontinued/maruti-suzuki/800-2000-2008.jpg"/>
                  {% endif %}
             </li>
         {% endfor %}
     </ul>
 {% endblock %}
+
+https://bsmedia.business-standard.com/_media/bs/img/article/2022-08/11/full/1660213977-4976.jpg
+https://bsmedia.business-standard.com/_media/bs/img/article/2022-08/11/full/1660213977-4976.jpg/

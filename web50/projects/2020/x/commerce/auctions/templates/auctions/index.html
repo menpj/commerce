@@ -22,25 +22,13 @@
                  {% if listing.imageurl %}
                     hello there
                     {{listing.imageurl}}
-                    <img src={{listing.imageurl}}/>
+                    <img src={{listing.imageurl}} />
                  {% endif %}
             </li>
         {% endfor %}
 
 
-        {% for listing in listings %}
-            <li>
-                 
-                 
-                 
-                
-
-                 {% if listing.imageurl %}
-                    {{listing.imageurl}}
-                    <img src={{listing.imageurl}}/>
-                 {% endif %}
-            </li>
-        {% endfor %}
+        
 
     </ul>
 {% endblock %}
