@@ -1,2 +1,28 @@
-SELECT MAX(bid) FROM BID GROUP BY listingid
-{{ highestbid[listing.listingid] }} 
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    <ul>
+        {% for listing in listings %}
+            <li>
+                 <h2>{{listing.title}}</h2> 
+                 {{listing.description}}
+                
+                 id: {{ listing.listingid }}
+                 {% with id=listing.listingid %}
+                 {{id}}
+                 hello: {{bid.id}}
+                 {%endwith%}  
+
+                 
+                 
+                
+
+                 {% if listing.imageurl %}
+                    <img src={{listing.imageurl}}/>
+                 {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

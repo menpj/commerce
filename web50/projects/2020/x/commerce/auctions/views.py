@@ -12,6 +12,8 @@ def index(request):
     
     #highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
     highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
+    
+    #print(testing1)
     #highestBid= Bid.objects.aggregate(Max('bid')) 
     #print(highestBid[0]['hbid'])
     hBid=list(highestBid)  
@@ -20,15 +22,19 @@ def index(request):
     for bid in hBid:
         highestBid[bid['listingid']]=bid['hbid']
 
-    for bid in highestBid:
-        print(bid)
+    #for bid in highestBid:
+    #   print(bid)
     print(highestBid)
     #print(highestBid['0])
-    #lisitngs= list(Listing.objects.all())
+    lisitngs= list(Listing.objects.values())
     #print(lisitngs)
+    for listing in lisitngs:
+        listing["hbid"]=highestBid[listing["listingid"]]
+        #listing["hbid"]=highestBid[1]
+    print(lisitngs)
     
-    print(highestBid[4])
-    return render(request, "auctions/index.html", {"listings": Listing.objects.all(),"bid": highestBid})
+    #print(highestBid[4])
+    return render(request, "auctions/index.html", {"listings": Listing.objects.all(),"bid": highestBid,"listngs":lisitngs})
 
 
 def login_view(request):
