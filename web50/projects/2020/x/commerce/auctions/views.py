@@ -139,3 +139,8 @@ def createlisting(request):
             })
 
     return render(request, "auctions/createlisting.html",{"form": NewListingForm()}) 
+
+
+def listing(request,listing_id):
+    print(listing_id)
+    
