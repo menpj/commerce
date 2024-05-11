@@ -4,15 +4,15 @@
     <h2>Active Listings</h2>
 
     <ul>
-        {% for listing in listngs %}
+        {% for listing in listings %}
             <li>
                  <h2>{{listing.title}}</h2> 
-                 {{listing.description}}
-                
-                 id: {{ listing.listingid }}
+                 Description: {{listing.description}}
+                <br>
+                 Listing ID: {{ listing.listingid }}
+                 <br>
                  
-                 
-                 hbid: {{listing.hbid   }}
+                 Current Price: {{listing.hbid   }}
                  
 
                  
@@ -20,8 +20,7 @@
                 
 
                  {% if listing.imageurl %}
-                    hello there
-                    {{listing.imageurl}}
+                    
                     <img src={{listing.imageurl}} />
                  {% endif %}
             </li>

@@ -34,7 +34,7 @@ def index(request):
     print(lisitngs)
     
     #print(highestBid[4])
-    return render(request, "auctions/index.html", {"listings": Listing.objects.all(),"bid": highestBid,"listngs":lisitngs})
+    return render(request, "auctions/index.html", {"listings":lisitngs})
 
 
 def login_view(request):
