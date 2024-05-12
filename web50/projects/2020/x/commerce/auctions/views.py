@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,QueryDict
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
@@ -9,9 +9,10 @@ from django.db.models import Max
 import urllib
 
 
+list1="1000"
 
 def index(request):
-    
+        
     #highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
     highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
     
@@ -34,7 +35,9 @@ def index(request):
         listing["hbid"]=highestBid[listing["listingid"]]
         #listing["hbid"]=highestBid[1]
     print(lisitngs)
-    
+    global list1
+    list1=lisitngs
+    #request.session['listings']=lisitngs
     #print(highestBid[4])
     return render(request, "auctions/index.html", {"listings":lisitngs})
 
@@ -150,6 +153,40 @@ def createlisting(request):
 #def listingpage(request,listing_id,data):    
 #    print(listing_id)
     
-def listingpage(request,listing_id):    
-    pass
+def listingpage(request,listing_id=None):
+    #listings=request.session['listings']
+    print(listing_id)
+    print("see the magic")
+    global list1
+    if list1=="1000":
+        highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
+    
+       
+        hBid=list(highestBid)  
+        
+        highestBid={}
+        for bid in hBid:
+            highestBid[bid['listingid']]=bid['hbid']
+
+        
+        print(highestBid)
+        
+        lisitngs= list(Listing.objects.values())
+        
+        for listing in lisitngs:
+            listing["hbid"]=highestBid[listing["listingid"]]
+            
+        print(lisitngs)
+        list1=lisitngs
+
+    print(list1)
+    print("again")
+    for list2 in list1:
+        if (list2.get("listingid"))==listing_id:
+            print(f"{list2.get("listingid")} is present")
+            return render(request, "auctions/listingpage.html", {"listing":list2})
+    
+    #print(listings["listings"])
+   
+  
 
