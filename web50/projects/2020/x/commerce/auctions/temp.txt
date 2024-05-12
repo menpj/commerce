@@ -1,24 +1,12 @@
-highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
-    
-    #print(testing1)
-    #highestBid= Bid.objects.aggregate(Max('bid')) 
-    #print(highestBid[0]['hbid'])
-    hBid=list(highestBid)  
-    #print(type(highestBid))
-    highestBid={}
-    for bid in hBid:
-        highestBid[bid['listingid']]=bid['hbid']
 
-    #for bid in highestBid:
-    #   print(bid)
-    print(highestBid)
-    #print(highestBid['0])
-    lisitngs= list(Listing.objects.values())
-    #print(lisitngs)
-    for listing in lisitngs:
-        listing["hbid"]=highestBid[listing["listingid"]]
-        #listing["hbid"]=highestBid[1]
-    print(lisitngs)
-    
-    #print(highestBid[4])
-    return render(request, "auctions/index.html", {"listings":lisitngs})
+                 <h2><a href="{% url 'listingpage' listing_id=listing.listingid  %}?{{listing|get_encoded_dict}}">{{listing.title}}</a></h2> 
+
+
+                 register = template.Library()
+@register.filter
+def get_encoded_dict(data_dict):
+    return urllib.urlencode(data_dict)
+
+
+    <!--h2><a href="{% url 'listingpage' listing_id=listing.listingid  %}?{{listing|get_encoded_dict}}">{{listing.title}}</a></h2--> 
+                 <!-- h2><a href="{% url 'listingpage'  %}?{{listing|get_encoded_dict}}">{{listing.title}}</a></h2 -->

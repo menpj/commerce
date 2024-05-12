@@ -6,7 +6,9 @@
     <ul>
         {% for listing in listings %}
             <li>
-                 <h2><a href = "{% url 'listing' listing_id=listing.listingid  %}">{{listing.title}}</a></h2> 
+                 
+                 <!--h2><a href="{% url 'listingpage' listing_id=listing.listingid  %}">{{listing.title}}</a></h2-->
+                 <h2><a href="{% url 'listingpage' listing_id=listing.listingid  %}?{{listing|urlencode}}">{{listing.title}}</a></h2> 
                  Description: {{listing.description}}
                 <br>
                  Listing ID: {{ listing.listingid }}
@@ -15,11 +17,7 @@
                  Current Price: {{listing.hbid   }}
                  
 
-                 
-                 
-                
-
-                 {% if listing.imageurl %}
+        urlencode                 {% if listing.imageurl %}
                     
                     <img src={{listing.imageurl}} />
                  {% endif %}

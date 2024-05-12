@@ -6,6 +6,8 @@ from django.urls import reverse
 from django import forms
 from .models import User,Listing,Bid
 from django.db.models import Max
+import urllib
+
 
 
 def index(request):
@@ -141,6 +143,14 @@ def createlisting(request):
     return render(request, "auctions/createlisting.html",{"form": NewListingForm()}) 
 
 
-def listing(request,listing_id):
-    print(listing_id)
-    
+
+
+
+#def listingpage(request,data):
+def listingpage(request,listing_id,data):    
+    print(data)
+
+
+
+#def listingpage(request,listing_id):
+#    print(listing_id)   
