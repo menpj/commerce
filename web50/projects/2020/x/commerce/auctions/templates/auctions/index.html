@@ -7,8 +7,8 @@
         {% for listing in listings %}
             <li>
                  
-                 <!--h2><a href="{% url 'listingpage' listing_id=listing.listingid  %}">{{listing.title}}</a></h2-->
-                 <h2><a href="{% url 'listingpage' listing_id=listing.listingid  %}?{{listing|urlencode}}">{{listing.title}}</a></h2> 
+                 
+                 <h2><a href="{% url 'listingpage'  %}?{{listing|urlencode}}">{{listing.title}}</a></h2> 
                  Description: {{listing.description}}
                 <br>
                  Listing ID: {{ listing.listingid }}

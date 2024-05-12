@@ -146,11 +146,10 @@ def createlisting(request):
 
 
 
-#def listingpage(request,data):
-def listingpage(request,listing_id,data):    
-    print(data)
 
+#def listingpage(request,listing_id,data):    
+#    print(listing_id)
+    
+def listingpage(request,listing_id):    
+    pass
 
-
-#def listingpage(request,listing_id):
-#    print(listing_id)   

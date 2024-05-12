@@ -10,3 +10,5 @@ def get_encoded_dict(data_dict):
 
     <!--h2><a href="{% url 'listingpage' listing_id=listing.listingid  %}?{{listing|get_encoded_dict}}">{{listing.title}}</a></h2--> 
                  <!-- h2><a href="{% url 'listingpage'  %}?{{listing|get_encoded_dict}}">{{listing.title}}</a></h2 -->
+
+                 <!--h2><a href="{% url 'listingpage' listing_id=listing.listingid  %}">{{listing.title}}</a></h2-->
