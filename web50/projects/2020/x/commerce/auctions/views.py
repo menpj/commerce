@@ -3,10 +3,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect,QueryDict
 from django.shortcuts import render
 from django.urls import reverse
-from django import forms
-from .models import User,Listing,Bid
+from django import forms    
+from .models import User,Listing,Bid,Watchlist
 from django.db.models import Max
-import urllib
+
 
 
 list1="1000"
@@ -152,39 +152,61 @@ def createlisting(request):
 
 #def listingpage(request,listing_id,data):    
 #    print(listing_id)
+
+
+class CloseAuction(forms.Form):
+    closeauction = forms.BooleanField(label="Close Auction")
     
 def listingpage(request,listing_id=None):
     #listings=request.session['listings']
+
+
+    if request.method=="POST":
+        print(request.POST)
+        if "watchlist" in request.POST:
+            print("request to add to watchlist received")
+            list3=Listing.objects.get(pk=listing_id)
+            watchlisting= Watchlist(userid=request.user,listingid=list3)
+            watchlisting.save()
+        elif 'closeauction' in request.POST:
+            print("request for closing auction received")
+        else:
+             print("no request received")
+            
+
     print(listing_id)
     print("see the magic")
     global list1
     if list1=="1000":
-        highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
+        pass
+    highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
+
     
-       
-        hBid=list(highestBid)  
-        
-        highestBid={}
-        for bid in hBid:
-            highestBid[bid['listingid']]=bid['hbid']
+    hBid=list(highestBid)  
+    
+    highestBid={}
+    for bid in hBid:
+        highestBid[bid['listingid']]=bid['hbid']
 
+    
+    print(highestBid)
+    
+    lisitngs= list(Listing.objects.values())
+    
+    for listing in lisitngs:
+        listing["hbid"]=highestBid[listing["listingid"]]
         
-        print(highestBid)
-        
-        lisitngs= list(Listing.objects.values())
-        
-        for listing in lisitngs:
-            listing["hbid"]=highestBid[listing["listingid"]]
-            
-        print(lisitngs)
-        list1=lisitngs
+    print(lisitngs)
+    list1=lisitngs
 
-    print(list1)
+    #print(list1)
     print("again")
     for list2 in list1:
         if (list2.get("listingid"))==listing_id:
+            print(list2)
+            print(list2.get("usrid_id"))
             print(f"{list2.get("listingid")} is present")
-            return render(request, "auctions/listingpage.html", {"listing":list2})
+            return render(request, "auctions/listingpage.html", {"listing":list2,"closeauction":CloseAuction()})
     
     #print(listings["listings"])
    

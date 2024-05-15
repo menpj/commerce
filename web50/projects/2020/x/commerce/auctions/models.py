@@ -16,9 +16,10 @@ class Listing(models.Model):
     basebid=models.DecimalField(decimal_places=2,max_digits=60)
     category=models.CharField(blank=True,max_length=100)
     imageurl=models.URLField(blank=True)
+    closed=models.BooleanField(default=False)
 
     def __str__(self):
-        return f"user id {self.usrid} created {self.listingid} with {self.title} with {self.description} with base bid {self.basebid}"
+        return f"user id {self.usrid} created {self.listingid} with {self.title} with {self.description} with base bid {self.basebid} closed status of lisitng is {self.closed}"
     
 
 class Bid(models.Model):
@@ -29,3 +30,20 @@ class Bid(models.Model):
     def __str__(self):
         #return f"listing id {self.listingid} bid value {self.bid}"
         return f"{self.listingid}"
+    
+
+class Watchlist(models.Model):
+    watchlistid= models.AutoField(primary_key=True)
+    userid= models.ForeignKey(User,on_delete=models.CASCADE,related_name="userwatchlist")
+    listingid = models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingwatchlist")
+
+
+
+    def __str__(self):
+        return f"{self.watchlistid} created by {self.userid} with lisitng {self.listingid}"
+    
+class Comments(models.Model):
+    commentid=models.AutoField(primary_key=True)
+    userid= models.ForeignKey(User,on_delete=models.CASCADE,related_name="userwatchlistcmnt")
+    listingid = models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingwatchlistcmnt")
+    comment=models.TextField()
