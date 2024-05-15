@@ -160,20 +160,35 @@ class CloseAuction(forms.Form):
 def listingpage(request,listing_id=None):
     #listings=request.session['listings']
 
-
+    list3=Listing.objects.get(pk=listing_id)
     if request.method=="POST":
+        print("post request received")
         print(request.POST)
-        if "watchlist" in request.POST:
+        if "watchlistadd" in request.POST:
             print("request to add to watchlist received")
-            list3=Listing.objects.get(pk=listing_id)
+            #list3=Listing.objects.get(pk=listing_id)
             watchlisting= Watchlist(userid=request.user,listingid=list3)
             watchlisting.save()
+        elif "watchlistremove" in request.POST:
+            print("request to remove from watchlist received")
+            list3.delete()
+            list3.save()
         elif 'closeauction' in request.POST:
             print("request for closing auction received")
         else:
              print("no request received")
-            
+        
+    #watch=Watchlist.objects.filter(userid=request.user,listingid=list3)
+    try:
+        watch=Watchlist.objects.get(userid=request.user,listingid=list3)
+    except:
+        watch=None
+    print(" ")
 
+    print("watchout for this:")
+    #if watch:
+    print(watch)
+    print(" ")
     print(listing_id)
     print("see the magic")
     global list1
@@ -206,7 +221,7 @@ def listingpage(request,listing_id=None):
             print(list2)
             print(list2.get("usrid_id"))
             print(f"{list2.get("listingid")} is present")
-            return render(request, "auctions/listingpage.html", {"listing":list2,"closeauction":CloseAuction()})
+            return render(request, "auctions/listingpage.html", {"listing":list2,"closeauction":CloseAuction(),"watch":watch})
     
     #print(listings["listings"])
    
