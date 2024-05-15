@@ -1,0 +1,64 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+
+    <ul>
+       
+            <li>
+                 
+                 
+                 <h2><a href="{% url 'listingpage' listing_id=listing.listingid %}">{{listing.title}}</a></h2> 
+                 Description: {{listing.description}}
+                <br>
+                 Listing ID: {{ listing.listingid }}
+                 <br>
+                 
+                 Current Price: {{listing.hbid   }}
+                 
+                 {% if listing.imageurl %}
+                    
+                    <img src={{listing.imageurl}} />
+                 {% endif %}
+
+                {% if user.is_authenticated %}
+                    <form action="{% url 'listingpage' listing_id=listing.listingid %}" id="watchlist" method="post">
+                        {% csrf_token %}
+                        {% if watch %}
+                            <input type="hidden" name="watchlistremove" value="form1">
+                            <input type="submit",id='watchlist',name= "watchlist", value="Remove from Watchlist">
+                        {%else%}
+                            <input type="hidden" name="watchlistadd" value="form1">
+                            <input type="submit",id='watchlist',name= "watchlist", value="Add to Watchlist">
+                        {%endif%}
+                        
+                    </form>
+
+                    {% if listing.closed == False  %}
+                        
+                        
+                        {% if listing.usrid_id == user.id %}
+                        <form action="{% url 'listingpage' listing_id=listing.listingid %}" method="post">
+                            {% csrf_token %}
+                            {{ closeauction }}
+                            <input type="submit",name= "closeauction", value="Save">
+                            
+                        </form>
+                        {%endif%}
+
+                    {%else%}
+
+                    lsting is closed
+
+                    {% endif %}
+
+
+                {% endif %}
+            </li>
+        
+
+
+        
+
+    </ul>
+{% endblock %}
