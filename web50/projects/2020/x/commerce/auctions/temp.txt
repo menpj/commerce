@@ -1,59 +1,61 @@
-{% extends "auctions/layout.html" %}
 
-{% block body %}
+
+
+
+
+
+
+
+
+
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+
+class User(AbstractUser):
+    pass
+
+
+
+class Listing(models.Model):
+    listingid= models.AutoField(primary_key=True)
+    usrid = models.ForeignKey(User, on_delete=models.CASCADE, related_name="userlisting")
+    title=models.CharField(max_length=100)
+    description=models.TextField()
+  
+    basebid=models.DecimalField(decimal_places=2,max_digits=60)
+    category=models.CharField(blank=True,max_length=100)
+    imageurl=models.URLField(blank=True)
+    closed=models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"user id {self.usrid} created {self.listingid} with {self.title} with {self.description} with base bid {self.basebid} closed status of lisitng is {self.closed}"
     
 
-    <ul>
-       
-            <li>
-                 
-                 
-                 <h2><a href="{% url 'listingpage' listing_id=listing.listingid %}">{{listing.title}}</a></h2> 
-                 Description: {{listing.description}}
-                <br>
-                 Listing ID: {{ listing.listingid }}
-                 <br>
-                 
-                 Current Price: {{listing.hbid   }}
-                 
-                 {% if listing.imageurl %}
-                    
-                    <img src={{listing.imageurl}} />
-                 {% endif %}
+class Bid(models.Model):
+    bidid=models.AutoField(primary_key=True)
+    listingid=models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingbid")
+    bid=models.DecimalField(decimal_places=2,max_digits=60)
+    
 
-                {% if user.is_authenticated %}
-                    <form action="{% url 'listingpage' listing_id=listing.listingid %}" method="post">
-                        {% csrf_token %}
-                        {{ closeauction }}
-                        <input type="submit",name= "closeauction", value="Save">
-                        
-                    </form>
+    def __str__(self):
+        #return f"listing id {self.listingid} bid value {self.bid}"
+        return f"{self.listingid}"
+    
 
-                    {% if listing.closed == False  %}
-                        
-                        
-                        {% if listing.usrid_id == user.id %}
-                        <form action="{% url 'listingpage' listing_id=listing.listingid %}" method="post">
-                            {% csrf_token %}
-                            {{ closeauction }}
-                            <input type="submit",name= "closeauction", value="Save">
-                            
-                        </form>
-                        {%endif%}
+class Watchlist(models.Model):
+    watchlistid= models.AutoField(primary_key=True)
+    userid= models.ForeignKey(User,on_delete=models.DO_NOTHING)
+    listingid = models.ForeignKey(Listing,on_delete=models.DO_NOTHING)
+    #constraints = [models.UniqueConstraint(fields=['userid','listingid'], name='unique watchlist')]
+    class Meta:
+        unique_together = ('userid', 'listingid')
 
-                    {%else%}
-
-                    lsting is closed
-
-                    {% endif %}
-
-
-                {% endif %}
-            </li>
-        
-
-
-        
-
-    </ul>
-{% endblock %}
+    def __str__(self):
+        return f"{self.watchlistid} created by {self.userid} with lisitng {self.listingid}"
+    
+class Comments(models.Model):
+    commentid=models.AutoField(primary_key=True)
+    userid= models.ForeignKey(User,on_delete=models.CASCADE,related_name="userwatchlistcmnt")
+    listingid = models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingwatchlistcmnt")
+    comment=models.TextField()

@@ -37,7 +37,7 @@ class Watchlist(models.Model):
     watchlistid= models.AutoField(primary_key=True)
     userid= models.ForeignKey(User,on_delete=models.CASCADE,related_name="userwatchlist")
     listingid = models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingwatchlist")
-    #constraints = [models.UniqueConstraint(fields=['userid','listingid'], name='unique watchlist')]
+    
     class Meta:
         unique_together = ('userid', 'listingid')
 

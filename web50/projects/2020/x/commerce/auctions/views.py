@@ -180,8 +180,9 @@ def listingpage(request,listing_id=None):
                 watchlisting.save()
         elif "watchlistremove" in request.POST:
             print("request to remove from watchlist received")
-            list3.delete()
-            list3.save()
+            watch=Watchlist.objects.get(userid=request.user,listingid=list3)
+            watch.delete()
+            #list3.save()
         elif 'closeauction' in request.POST:
             print("request for closing auction received")
         else:
