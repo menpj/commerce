@@ -152,6 +152,8 @@ def createlisting(request):
 
 #def listingpage(request,listing_id,data):    
 #    print(listing_id)
+#class Watch(forms.Form):
+ #   watchlist=forms.BooleanField(label="Add/Remove From Watchlist",blank=False)
 
 
 class CloseAuction(forms.Form):
@@ -167,8 +169,15 @@ def listingpage(request,listing_id=None):
         if "watchlistadd" in request.POST:
             print("request to add to watchlist received")
             #list3=Listing.objects.get(pk=listing_id)
-            watchlisting= Watchlist(userid=request.user,listingid=list3)
-            watchlisting.save()
+            try:
+                watch=Watchlist.objects.get(userid=request.user,listingid=list3)
+            except:
+                watch=None
+            if watch:
+                pass
+            else:
+                watchlisting= Watchlist(userid=request.user,listingid=list3)
+                watchlisting.save()
         elif "watchlistremove" in request.POST:
             print("request to remove from watchlist received")
             list3.delete()

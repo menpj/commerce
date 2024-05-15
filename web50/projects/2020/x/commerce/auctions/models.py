@@ -26,6 +26,7 @@ class Bid(models.Model):
     bidid=models.AutoField(primary_key=True)
     listingid=models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingbid")
     bid=models.DecimalField(decimal_places=2,max_digits=60)
+    
 
     def __str__(self):
         #return f"listing id {self.listingid} bid value {self.bid}"
@@ -36,8 +37,9 @@ class Watchlist(models.Model):
     watchlistid= models.AutoField(primary_key=True)
     userid= models.ForeignKey(User,on_delete=models.CASCADE,related_name="userwatchlist")
     listingid = models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingwatchlist")
-
-
+    #constraints = [models.UniqueConstraint(fields=['userid','listingid'], name='unique watchlist')]
+    class Meta:
+        unique_together = ('userid', 'listingid')
 
     def __str__(self):
         return f"{self.watchlistid} created by {self.userid} with lisitng {self.listingid}"
