@@ -38,12 +38,22 @@
                         
                         
                         {% if listing.usrid_id == user.id %}
+                            <form action="{% url 'listingpage' listing_id=listing.listingid %}" method="post">
+                                {% csrf_token %}
+                                {{ closeauction }}
+                                <input type="submit",name= "closeauction", value="Save">
+                                
+                            </form>
+                        {%else%}
+                            
                         <form action="{% url 'listingpage' listing_id=listing.listingid %}" method="post">
                             {% csrf_token %}
-                            {{ closeauction }}
-                            <input type="submit",name= "closeauction", value="Save">
+                            <br>
+                            {{ listingpageform }}
+                            <input type="submit",name= "listingpageform", value="Save">
                             
                         </form>
+
                         {%endif%}
 
                     {%else%}

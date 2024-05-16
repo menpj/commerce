@@ -26,6 +26,7 @@ class Bid(models.Model):
     bidid=models.AutoField(primary_key=True)
     listingid=models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingbid")
     bid=models.DecimalField(decimal_places=2,max_digits=60)
+    userid= models.ForeignKey(User,on_delete=models.CASCADE,default=1,related_name="userbid")
     
 
     def __str__(self):

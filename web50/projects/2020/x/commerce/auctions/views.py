@@ -9,6 +9,8 @@ from django.db.models import Max
 
 
 
+
+
 list1="1000"
 
 def index(request):
@@ -129,7 +131,7 @@ def createlisting(request):
             listing=Listing.objects.get(pk=listingid)
 
             print(listing)
-            bid=Bid(listingid=listing ,bid=bid)
+            bid=Bid(listingid=listing ,bid=bid,userid=request.user)
             bid.save()
             print("bid:")
             print(bid)
@@ -155,12 +157,33 @@ def createlisting(request):
 #class Watch(forms.Form):
  #   watchlist=forms.BooleanField(label="Add/Remove From Watchlist",blank=False)
 
+class listingpageform(forms.Form):
+    
+    #minbid=1.0
 
+    bid=forms.DecimalField(label="Bid Value")
+
+
+
+    def __init__(self, *args, hbid,basebid, **kwargs):
+        super().__init__(*args, **kwargs)
+        bid = self.fields['bid']
+        if hbid>basebid:
+            bid.widget.attrs['min'] = hbid+1
+            self.fields['bid'].help_text = f"Value must be greater than or equal to {hbid+1}"
+            
+        else:
+            bid.widget.attrs['min'] = hbid
+            self.fields['bid'].help_text = f"Value must be greater than or equal to {hbid}"
+            
+            
 class CloseAuction(forms.Form):
     closeauction = forms.BooleanField(label="Close Auction")
     
 def listingpage(request,listing_id=None):
     #listings=request.session['listings']
+
+    
 
     list3=Listing.objects.get(pk=listing_id)
     if request.method=="POST":
@@ -185,6 +208,10 @@ def listingpage(request,listing_id=None):
             #list3.save()
         elif 'closeauction' in request.POST:
             print("request for closing auction received")
+        elif 'bid' in request.POST:
+            bidvalue=Bid(listingid=list3,bid=request.POST.get('bid'),userid=request.user)
+            bidvalue.save()
+            print(f"minimum bidding value {request.POST.get('bid')} of received")
         else:
              print("no request received")
         
@@ -231,7 +258,7 @@ def listingpage(request,listing_id=None):
             print(list2)
             print(list2.get("usrid_id"))
             print(f"{list2.get("listingid")} is present")
-            return render(request, "auctions/listingpage.html", {"listing":list2,"closeauction":CloseAuction(),"watch":watch})
+            return render(request, "auctions/listingpage.html", {"listing":list2,"closeauction":CloseAuction(),"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid'))})
     
     #print(listings["listings"])
    
