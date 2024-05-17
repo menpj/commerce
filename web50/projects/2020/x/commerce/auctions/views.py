@@ -177,8 +177,8 @@ class listingpageform(forms.Form):
             self.fields['bid'].help_text = f"Value must be greater than or equal to {hbid}"
             
             
-class CloseAuction(forms.Form):
-    closeauction = forms.BooleanField(label="Close Auction")
+#class CloseAuction(forms.Form):
+#    closeauction = forms.BooleanField(label="Close Auction")
     
 def listingpage(request,listing_id=None):
     #listings=request.session['listings']
@@ -207,7 +207,14 @@ def listingpage(request,listing_id=None):
             watch.delete()
             #list3.save()
         elif 'closeauction' in request.POST:
+            list3.closed= True
+            list3.save()
             print("request for closing auction received")
+        elif 'openauction' in request.POST:
+            list3.closed= False
+            list3.save()
+            print("request for opening aution received")
+            
         elif 'bid' in request.POST:
             bidvalue=Bid(listingid=list3,bid=request.POST.get('bid'),userid=request.user)
             bidvalue.save()
@@ -258,7 +265,7 @@ def listingpage(request,listing_id=None):
             print(list2)
             print(list2.get("usrid_id"))
             print(f"{list2.get("listingid")} is present")
-            return render(request, "auctions/listingpage.html", {"listing":list2,"closeauction":CloseAuction(),"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid'))})
+            return render(request, "auctions/listingpage.html", {"listing":list2,"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid'))})
     
     #print(listings["listings"])
    

@@ -40,8 +40,12 @@
                         {% if listing.usrid_id == user.id %}
                             <form action="{% url 'listingpage' listing_id=listing.listingid %}" method="post">
                                 {% csrf_token %}
-                                {{ closeauction }}
-                                <input type="submit",name= "closeauction", value="Save">
+                                
+                                    <input type="hidden" name="closeauction" value="form1">
+                                    <input type="submit",id='closeauction',name= "closeauction", value="Close Auction">
+                                
+                                    
+                                
                                 
                             </form>
                         {%else%}
@@ -57,9 +61,15 @@
                         {%endif%}
 
                     {%else%}
+                        <form action="{% url 'listingpage' listing_id=listing.listingid %}" method="post">
+                            {% csrf_token %}
+                            {% if listing.usrid_id == user.id %}
 
-                    lsting is closed
-
+                                        <input type="hidden" name="openauction" value="form1">
+                                        <input type="submit",id='openauction',name= "openauction", value="Open Auction">
+                                    
+                            {%endif%}
+                        </form>
                     {% endif %}
 
 
