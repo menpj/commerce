@@ -8,10 +8,11 @@ from .models import User,Listing,Bid,Watchlist
 from django.db.models import Max
 
 from .models import Comments
+from datetime import datetime 
 
 
 
-
+csrftokenchecking="0"
 list1="1000"
 
 def index(request):
@@ -189,7 +190,7 @@ class listingpageform(forms.Form):
 def listingpage(request,listing_id=None):
     #listings=request.session['listings']
 
-    
+    global csrftokenchecking
 
     list3=Listing.objects.get(pk=listing_id)
     if request.method=="POST":
@@ -227,11 +228,14 @@ def listingpage(request,listing_id=None):
             print(f"minimum bidding value {request.POST.get('bid')} of received")
 
         elif 'comment' in request.POST:
-            print("comment detected")
-            cmnt = request.POST['comment']
-            print(cmnt)
-            cmt = Comments(listingid=list3,userid=request.user,comment=cmnt)
-            cmt.save()
+            
+            if csrftokenchecking!=request.POST['csrfmiddlewaretoken']:
+                print("comment detected")
+                cmnt = request.POST['comment']
+                print(cmnt)
+                cmt = Comments(listingid=list3,userid=request.user,comment=cmnt,datetim=datetime.now())
+                cmt.save()
+                csrftokenchecking=request.POST['csrfmiddlewaretoken']
             #cmt = Comments()
 
         else:
@@ -302,7 +306,7 @@ def listingpage(request,listing_id=None):
             print(list2.get("usrid_id"))
             print(f"{list2.get("listingid")} is present")
             return render(request, "auctions/listingpage.html", {"listing":list2,"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid')),"comments":comments(),"cmntz":cmntz})
-    
+            #return HttpResponse("", {"listing":list2,"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid')),"comments":comments(),"cmntz":cmntz})
     #print(listings["listings"])
    
   
