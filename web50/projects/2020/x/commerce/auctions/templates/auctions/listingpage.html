@@ -87,10 +87,11 @@
             
             {%for commnt in cmntz%}
                     <br>
-                    this here
-                    {{commnt.comment}}
-                    {{commnt.username}}
+                    <br>
+                    {{commnt.comment}} by 
+                    {{commnt.username}} at
                     {{commnt.datetim}}
+
             {%endfor%}
             
 
