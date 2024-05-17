@@ -71,12 +71,28 @@
                             {%endif%}
                         </form>
                     {% endif %}
-
-
+                    
+                    <br>
+                    <br>
+                    <form action="{% url 'listingpage' listing_id=listing.listingid %}" method="post">
+                        {% csrf_token %}
+                        {{ comments }}
+                        <input type="submit",name= "comments", value="Save">
+                        
+                    </form>
                 {% endif %}
+                <br>
+                
             </li>
-        
-
+            
+            {%for commnt in cmntz%}
+                    <br>
+                    this here
+                    {{commnt.comment}}
+                    {{commnt.username}}
+                    {{commnt.datetim}}
+            {%endfor%}
+            
 
         
 

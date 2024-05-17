@@ -1,16 +1,5 @@
-class listingpageform(forms.Form):
-    
-    
-
-    bid=forms.DecimalField(label="Base Bid")
-
-
-
-    def __init__(self, *args, min_value=0, **kwargs):
-        super().__init__(*args, **kwargs)
-        bid = self.fields['bid']
-        bid.min_value = min_value+1
-        if min_value is not None:
-            bid.validators.append(MinValueValidator(min_value+1))
-            bid.widget.attrs['min'] = min_value+1
-        
+class Comments(models.Model):
+    userid= models.ForeignKey(User,on_delete=models.CASCADE,related_name="userwatchlistcmnt")
+    listingid = models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingwatchlistcmnt")
+    comment=models.TextField()
+    #datetim=models.DateTimeField(default=timezone.now,null=True,blank=True)

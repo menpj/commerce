@@ -7,6 +7,7 @@ from django import forms
 from .models import User,Listing,Bid,Watchlist
 from django.db.models import Max
 
+from .models import Comments
 
 
 
@@ -156,6 +157,11 @@ def createlisting(request):
 #    print(listing_id)
 #class Watch(forms.Form):
  #   watchlist=forms.BooleanField(label="Add/Remove From Watchlist",blank=False)
+class comments(forms.Form):
+    #comment = forms.CharField(max_length=200,label="enter your comment",initial="enter comment",help_text="enter your comment here",widget=forms.TextInput)
+    comment = forms.CharField(max_length=200,help_text="ENTER YOUR COMMENT HERE",widget=forms.Textarea)
+    
+
 
 class listingpageform(forms.Form):
     
@@ -219,6 +225,15 @@ def listingpage(request,listing_id=None):
             bidvalue=Bid(listingid=list3,bid=request.POST.get('bid'),userid=request.user)
             bidvalue.save()
             print(f"minimum bidding value {request.POST.get('bid')} of received")
+
+        elif 'comment' in request.POST:
+            print("comment detected")
+            cmnt = request.POST['comment']
+            print(cmnt)
+            cmt = Comments(listingid=list3,userid=request.user,comment=cmnt)
+            cmt.save()
+            #cmt = Comments()
+
         else:
              print("no request received")
         
@@ -258,14 +273,35 @@ def listingpage(request,listing_id=None):
     print(lisitngs)
     list1=lisitngs
 
+    print("hello look here")
+    #cmntz= Comments.objects.filter(listingid=list3)
+    cmntz= list(Comments.objects.filter(listingid=list3).values())
+    #cmntz= Comments.objects.get(listingid=list3)
+
+    print(f"These are {cmntz}")
+
+    users=list(User.objects.values("id","username"))
+    print("users")
+    print(users)
+    userdict={}
+    for user in users:
+        userdict.update({user['id']:user['username']})
+    print(userdict)
     #print(list1)
+
+
+    for cmnt in cmntz:
+        cmnt["username"]=userdict[cmnt["userid_id"]]
+
+    print(cmntz)
+
     print("again")
     for list2 in list1:
         if (list2.get("listingid"))==listing_id:
             print(list2)
             print(list2.get("usrid_id"))
             print(f"{list2.get("listingid")} is present")
-            return render(request, "auctions/listingpage.html", {"listing":list2,"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid'))})
+            return render(request, "auctions/listingpage.html", {"listing":list2,"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid')),"comments":comments(),"cmntz":cmntz})
     
     #print(listings["listings"])
    

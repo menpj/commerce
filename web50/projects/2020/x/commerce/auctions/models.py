@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from datetime import datetime 
+from django.utils import timezone
 
 class User(AbstractUser):
     pass
@@ -46,7 +47,10 @@ class Watchlist(models.Model):
         return f"{self.watchlistid} created by {self.userid} with lisitng {self.listingid}"
     
 class Comments(models.Model):
-    commentid=models.AutoField(primary_key=True)
     userid= models.ForeignKey(User,on_delete=models.CASCADE,related_name="userwatchlistcmnt")
     listingid = models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingwatchlistcmnt")
     comment=models.TextField()
+    datetim=models.DateTimeField(default=datetime.now(),null=True,blank=True)
+
+    #class Meta:
+    #    unique_together = ('userid', 'comment','listingid')
