@@ -1,5 +1,22 @@
-class Comments(models.Model):
-    userid= models.ForeignKey(User,on_delete=models.CASCADE,related_name="userwatchlistcmnt")
-    listingid = models.ForeignKey(Listing,on_delete=models.CASCADE,related_name="listingwatchlistcmnt")
-    comment=models.TextField()
-    #datetim=models.DateTimeField(default=timezone.now,null=True,blank=True)
+highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
+    
+   
+    hBid=list(highestBid)  
+   
+    highestBid={}
+    for bid in hBid:
+        highestBid[bid['listingid']]=bid['hbid']
+
+    
+    print(highestBid)
+    
+    lisitngs= list(Listing.objects.values())
+    
+    for listing in lisitngs:
+        listing["hbid"]=highestBid[listing["listingid"]]
+       
+    print(lisitngs)
+    global list1
+    list1=lisitngs
+    
+    return render(request, "auctions/index.html", {"listings":lisitngs})

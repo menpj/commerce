@@ -67,7 +67,8 @@
 
                                         <input type="hidden" name="openauction" value="form1">
                                         <input type="submit",id='openauction',name= "openauction", value="Open Auction">
-                                    
+                            {% elif biduser == True %}
+                                <h3> You Won The Auction </h3>      
                             {%endif%}
                         </form>
                     {% endif %}

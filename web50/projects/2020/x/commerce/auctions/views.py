@@ -257,19 +257,32 @@ def listingpage(request,listing_id=None):
     global list1
     if list1=="1000":
         pass
-    highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
+    #test=Bid.objects.values()
+    #print(f"see test data {test}\n\n")
+    hghestBid = Bid.objects.filter(listingid=listing_id).values('listingid','userid','bid').order_by('-bid').first()
 
+    #testhighestBid = Bid.objects.filter(listingid=listing_id).annotate(hbid=Max('bid'))
+    print(f"test data see this {hghestBid}\n\n")
+    #hghestBid=Bid.objects.filter(bidid=testhighestBid.bidid).values('listingid','userid')
+    #print(f"test {hghestBid}")
+
+
+    #hghestBid = Bid.objects.values('listingid','userid').annotate(hbid=Max('bid'))
+    #hghestBid = Bid.objects.values('listingid','userid').annotate(hbid=Max('bid'))
     
-    hBid=list(highestBid)  
     
+    #hghestBid = Bid.objects.filter(listingid=listing_id).values('listingid','userid').annotate(hbid=Max('bid'))
+    
+    #hBid=list(hghestBid)  
+    #print(f"hbid details {hBid}")
     highestBid={}
-    for bid in hBid:
-        highestBid[bid['listingid']]=bid['hbid']
+    #for bid in hBid:
+    highestBid[hghestBid['listingid']]=hghestBid['bid']
 
     
-    print(highestBid)
+    print(f"details of highest bid {highestBid}")
     
-    lisitngs= list(Listing.objects.values())
+    lisitngs= list(Listing.objects.filter(listingid=listing_id).values())
     
     for listing in lisitngs:
         listing["hbid"]=highestBid[listing["listingid"]]
@@ -298,6 +311,19 @@ def listingpage(request,listing_id=None):
         cmnt["username"]=userdict[cmnt["userid_id"]]
 
     print(cmntz)
+    print(f"user details {request.user.id}")
+
+
+
+    #highestBid = Bid.objects.values('listingid').annotate(hbid=Max('bid'))
+    
+    if request.user.id == hghestBid['userid']:
+        print("i am the highest bidder")
+        biduser=True
+    else:
+        print("i am not the highest bidder")
+        biduser=False
+
 
     print("again")
     for list2 in list1:
@@ -305,9 +331,15 @@ def listingpage(request,listing_id=None):
             print(list2)
             print(list2.get("usrid_id"))
             print(f"{list2.get("listingid")} is present")
-            return render(request, "auctions/listingpage.html", {"listing":list2,"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid')),"comments":comments(),"cmntz":cmntz})
+            return render(request, "auctions/listingpage.html", {"listing":list2,"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid')),"comments":comments(),"cmntz":cmntz,"biduser":biduser})
             #return HttpResponse("", {"listing":list2,"watch":watch,"listingpageform":listingpageform(hbid=list2.get('hbid'),basebid=list2.get('basebid')),"comments":comments(),"cmntz":cmntz})
     #print(listings["listings"])
+
+
+
+
+def watchlistpage(request):
+    print(request.user.userwatchlist.values())
    
-  
+    
 
