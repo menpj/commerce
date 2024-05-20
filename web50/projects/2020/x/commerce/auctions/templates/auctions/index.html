@@ -1,8 +1,12 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    {% if watch1 %}
+    <h2>Watch List</h2>
+    
+    {% else %}
     <h2>Active Listings</h2>
-
+    {%endif%}
     <ul>
         {% for listing in listings %}
             {% if listing.closed == False %}

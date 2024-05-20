@@ -10,6 +10,8 @@ from django.db.models import Max
 from .models import Comments
 from datetime import datetime 
 
+from django.contrib.auth.decorators import login_required
+
 
 
 csrftokenchecking="0"
@@ -43,7 +45,8 @@ def index(request):
     list1=lisitngs
     #request.session['listings']=lisitngs
     #print(highestBid[4])
-    return render(request, "auctions/index.html", {"listings":lisitngs})
+    watch4=False
+    return render(request, "auctions/index.html", {"listings":lisitngs,"watch4":watch4})
 
 
 def login_view(request):
@@ -337,9 +340,33 @@ def listingpage(request,listing_id=None):
 
 
 
-
+@login_required
 def watchlistpage(request):
-    print(request.user.userwatchlist.values())
-   
-    
+    print("hello here:")
+    watchlist= list(request.user.userwatchlist.values())
+    print(watchlist)
+    list4=[]
+    for bid in watchlist:
+        listing_id=bid['listingid_id']
+        print(listing_id)
+        list3=list(Listing.objects.filter(listingid=listing_id).values())
+        for list1 in list3:
+            list4.append(list1)
+    print(f"this is the list of biddings {list4}")
+    for list1 in list4:
+        
+        hghestBid = Bid.objects.filter(listingid=list1['listingid']).values('listingid','bid').order_by('-bid').first()
+        print(hghestBid)
+        list1['hbid']=hghestBid['bid']
+    watch1=True
+    print(f"updated list with highest bids {list4}")
+    return render(request, "auctions/index.html", {"listings":list4,"watch1":watch1})
 
+def category(request):
+    listings= list(Listing.objects.values())
+    categories=[]
+    for listing in listings:
+        if listing["category"]:
+            #print("hello this")
+            print(f"{listing['category']}")
+    return render(request, "auctions/category.html", {})
