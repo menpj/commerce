@@ -1,15 +1,18 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    {% if watch1 %}
+    {% if watch1 == 2 %}
     <h2>Watch List</h2>
     
-    {% else %}
+    {% elif watch1 == 1 %}
     <h2>Active Listings</h2>
+
+    {% elif watch1 == 3 %}
+    <h2>{{ name|capfirst }} Category</h2>
     {%endif%}
     <ul>
         {% for listing in listings %}
-            {% if listing.closed == False %}
+            
             <li>
                  
                  
@@ -27,7 +30,7 @@
                     <img src={{listing.imageurl}} />
                  {% endif %}
             </li>
-            {% endif %}
+            
         {% endfor %}
 
 

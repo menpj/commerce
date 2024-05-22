@@ -38,16 +38,23 @@ def index(request):
     lisitngs= list(Listing.objects.values())
     #print(lisitngs)
     for listing in lisitngs:
+
+        if listing['closed']== True:
+            lisitngs.remove(listing)
+            continue
+
         listing["hbid"]=highestBid[listing["listingid"]]
+        
         #listing["hbid"]=highestBid[1]
     print(lisitngs)
     global list1
     list1=lisitngs
     #request.session['listings']=lisitngs
     #print(highestBid[4])
-    watch4=False
-    return render(request, "auctions/index.html", {"listings":lisitngs,"watch4":watch4})
-
+    #watch4=False
+    watch1=1
+    #return render(request, "auctions/index.html", {"listings":lisitngs,"watch4":watch4})
+    return render(request, "auctions/index.html", {"listings":lisitngs,"watch1":watch1})
 
 def login_view(request):
     if request.method == "POST":
@@ -358,15 +365,41 @@ def watchlistpage(request):
         hghestBid = Bid.objects.filter(listingid=list1['listingid']).values('listingid','bid').order_by('-bid').first()
         print(hghestBid)
         list1['hbid']=hghestBid['bid']
-    watch1=True
+    #watch1=True
+    watch1=2
     print(f"updated list with highest bids {list4}")
     return render(request, "auctions/index.html", {"listings":list4,"watch1":watch1})
 
-def category(request):
-    listings= list(Listing.objects.values())
-    categories=[]
-    for listing in listings:
-        if listing["category"]:
-            #print("hello this")
-            print(f"{listing['category']}")
-    return render(request, "auctions/category.html", {})
+def category(request,cat_name=None):
+    if cat_name:
+        print(f"Category name received {cat_name}")
+
+        list2=list(Listing.objects.filter(category=cat_name).values())
+        print(list2)
+
+        for list1 in list2:
+            if list1['closed']== True:
+                list2.remove(list1)
+                continue
+            hghestBid = Bid.objects.filter(listingid=list1['listingid']).values('listingid','bid').order_by('-bid').first()
+            print(hghestBid)
+            list1['hbid']=hghestBid['bid']
+            
+
+    #watch1=True
+        watch1=3
+        print(f"updated list with highest bids {list2}")
+        return render(request, "auctions/index.html", {"listings":list2,"watch1":watch1,"name":cat_name})
+
+    else:
+        listings= list(Listing.objects.values())
+        categories=[]
+        for listing in listings:
+            if listing["category"]:
+                #print("hello this")
+                #print(f"{listing['category']}")
+                #categories.append(listing['category'].capitalize())
+                categories.append(listing['category'])
+
+        print(categories)
+        return render(request, "auctions/category.html", {"categories":categories})
