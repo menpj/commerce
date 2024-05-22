@@ -399,7 +399,8 @@ def category(request,cat_name=None):
                 #print("hello this")
                 #print(f"{listing['category']}")
                 #categories.append(listing['category'].capitalize())
-                categories.append(listing['category'])
+                if listing["category"] not in categories:
+                    categories.append(listing['category'])
 
         print(categories)
         return render(request, "auctions/category.html", {"categories":categories})
